@@ -1,7 +1,7 @@
 import User from "../Models/user.model.js";
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import transpoter from "../config/nodemalier.js";
+// import transpoter from "../config/nodemalier.js";
 
 
 export const register = async (req,res) =>{
@@ -35,18 +35,18 @@ export const register = async (req,res) =>{
             httpOnly:true, secure:process.env.NODE_ENV === 'production',sameSite:process.env.NODE_ENV === 'production' ? 'none' : 'strict',
             maxAge: 7*24*60*60*1000
         })
-// sending welcome email
-        const mailOptions={
-            from: process.env.SENDER_EMAIL,
-            to: email, 
-            subject: `welcome the ${name}`,
-            text:`welcome to my auth website , your account has been created with email id:${email}`
-        }
+// // sending welcome email
+//         const mailOptions={
+//             from: process.env.SENDER_EMAIL,
+//             to: email, 
+//             subject: `welcome the ${name}`,
+//             text:`welcome to my auth website , your account has been created with email id:${email}`
+//         }
 
-        await transpoter.sendMail(mailOptions);
-//welcome
+//         await transpoter.sendMail(mailOptions);
+// //welcome
         return res.json({
-            message:"user login",
+            message:"user register",
             success:true
         })
 
@@ -108,3 +108,12 @@ export const logout = async (req,res) =>{
         console.log(`something error in login `)
     }
 }
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password"); // exclude password
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching users" });
+  }
+};
